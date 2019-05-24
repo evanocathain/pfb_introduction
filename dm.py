@@ -19,7 +19,7 @@ fcentre = args.fcentre                        # in MHz
 bw      = args.bw                             # in MHz
 
 # Calculate some numbers based on inputs
-tsamp   = 1.0e-6/(2.0*bw)                     # in seconds (real-sampled data)
+tsamp   = 1.0e-6/bw                           # in seconds (complex-sampled data)
 ftop    = fcentre + 0.5*bw                    # in MHz
 fbot    = fcentre - 0.5*bw                    # in MHz
 dd      = 2.0*np.pi*4149.0*1.0e6*dm           # 
@@ -42,7 +42,7 @@ plt.plot(H.real)
 plt.plot(H.imag)
 plt.show()
 
-h = np.fft.fftshift(np.fft.fft(H))
+h = np.fft.fftshift(np.fft.ifft(H))
 plt.plot(np.abs(h))
 plt.show()
 
