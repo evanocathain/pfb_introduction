@@ -58,13 +58,24 @@ def pfb_spectrometer(x, n_taps, n_chan, n_int, window_fn="hamming"):
 
 if __name__ == "__main__":
     import pylab as plt
+    import argparse
     import seaborn as sns
     sns.set_style("white")
     
-    M     = 4          # Number of taps
-    P     = 1024       # Number of 'branches', also fft length
-    W     = 1000       # Number of windows of length M*P in input time stream
-    n_int = 10          # Number of time integrations on output data
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-ntaps', type=int, dest='ntaps', help='set the number of FIR filter taps in the PFB (default: 4)', default=4)
+    parser.add_argument('-nchans', type=int, dest='nchans', help='set the number of output channels from the PFB (default: 1024)', default=1024)
+    parser.add_argument('-tobs', type=float, dest='tobs', help='set the duration of the file in seconds (default: 1.0)', default=1.0)
+    parser.add_argument('-bw', type=float, dest='bw', help='set the bandwidth in MHz (default: 400.0)', default=400.0)
+    parser.add_argument('-fcentre', type=float, dest='fcentre', help='set the centre frequency in MHz (default: 1400.0)', default=1400.0)
+    args = parser.parse_args()
+
+    M      = args.ntaps            # Number of taps
+    P      = 2*args.nchans         # Number of 'branches', also fft length
+    Tobs   = args.tobs             # Tobs in seconds
+    nsamps = Tobs*(2.0*args.bw*1.0e6)  # Number of Nyquist samples in Tobs
+    W      = int(nsamps/(M*P))     # Number of windows in Tobs of complete M*P size chunks
+#    print M, P, W
 
     # Generate a test data steam
     samples = np.arange(M*P*W)
